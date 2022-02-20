@@ -7,8 +7,35 @@
     <!-- Left col -->
     <div class="col-md-12">
         <div class="card">
+            <div class="card-header">
+                <h1>News</h1>
+                {% include 'home/_controls.html.twig' %}
+            </div>
             <div class="card-body">
-                <p class="text-justify">Dashboard page</p>
+                <table id="news" class="table table-bordered table-striped table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th width="90px">ID news</th>
+                            <th>Title</th>
+                            <th width="190px">Date news</th>
+                            <th>Full text</th>
+                            <th width="150px">Category</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>ID news</th>
+                            <th>Title</th>
+                            <th>Date news</th>
+                            <th>Full text</th>
+                            <th>Category</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
             <!-- /.card-body -->
         </div>
@@ -17,4 +44,54 @@
     <!-- /.col -->
 </div>
 <!-- /.row -->
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function () {
+            let table = $("#news").DataTable({
+                "columnDefs": [
+                    {"name": "newsId", "targets": 0},
+                    {"name": "title", "targets": 1},
+                    {"name": "newsDate", "targets": 2},
+                    {"name": "fullText", "targets": 3},
+                    {"name": "category", "targets": 4},
+                    {"name": "control", "targets": 5, "orderable": false, "searchable": false},
+                ],
+                "ajax": {
+                    "url": "{{ path('datatable_news') }}",
+                    "type": "POST"
+                },
+                "stateSave": true,
+                "processing": true,
+                "serverSide": true,
+                "responsive": true,
+                "autoWidth": false,
+                "paging": true,
+                "info": true,
+                "searching": true,
+                "pageLength": 20,
+                "order": [[0, 'asc']],
+            });
+
+            $("#downloadNewsForRBC").on("click", function() {
+                let url = "{{ path('download_rbc_news') }}";
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    data: {
+                        "_method": "post",
+                        "_token": "{{ csrf_token('download-rbc-news') }}",
+                    },
+                    dataType: "json"
+                }).done(function (data) {
+                    table.ajax.reload(null, false);
+                    toastr.success(data.message);
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error("Something gone wrong");
+                });
+	        });
+        });
+    </script>
+
 {% endblock %}

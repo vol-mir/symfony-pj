@@ -2,7 +2,6 @@
 
 namespace App\Service\Parser\NewsResource;
 
-use App\Helper\DateHelper;
 use App\Helper\StringHelper;
 use Symfony\Component\DomCrawler\Crawler;
 

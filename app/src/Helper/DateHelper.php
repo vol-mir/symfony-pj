@@ -8,7 +8,7 @@ namespace App\Helper;
  */
 class DateHelper
 {
-    const PHP_STANDARD_FORMAT = "Y-m-d H:i:s";
+    const PHP_STANDARD_FORMAT = "d.m.Y H:i:s";
     const DATE_TIME_ZONE = "Europe/Minsk";
 
     /**
@@ -25,7 +25,7 @@ class DateHelper
                 $date
             );
             $date->setTimezone(new \DateTimeZone(self::DATE_TIME_ZONE));
-            $result = $date->format(self::PHP_STANDARD_FORMAT);
+            $result = $date;
         } catch (\Exception $e) {
             $result = false;
         }
