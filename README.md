@@ -13,3 +13,5 @@ $ docker exec -it php74-container bash
 $ composer install
 $ sh makedb.sh
 ```
+## Demo screen
+https://github.com/vol-mir/symfony-pj/tree/master/app/public/demo
