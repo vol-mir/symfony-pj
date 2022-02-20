@@ -4,6 +4,7 @@ namespace App\Service\Parser;
 
 use App\Entity\News;
 use App\Helper\DateHelper;
+use App\Helper\StringHelper;
 use App\Service\Parser\Transport\TransportInterface;
 use App\Service\Parser\NewsResource\RBCNewsFactory;
 use Doctrine\Persistence\ManagerRegistry;
@@ -76,17 +77,17 @@ class NewsFromUrl
             }
 
             $news = new News();
-            $news->setNewsId($item["news_id"]);
-            $news->setTitle($item["title"]);
-            $news->setLink($item["link"]);
+            $news->setNewsId(StringHelper::getElemStrArr($item, "news_id"));
+            $news->setTitle(StringHelper::getElemStrArr($item, "title"));
+            $news->setLink(StringHelper::getElemStrArr($item, "link"));
             $news->setDateNews(
                 DateHelper::parseFromInt($item["newsDate_timestamp"])
             );
-            $news->setFullText($item["full-text"]);
-            $news->setCategory($item["category"]);
-            $news->setAuthor(
-                array_key_exists("author", $item) ? $item["author"] : null
-            );
+
+            $news->setFullText(StringHelper::getElemStrArr($item, "full-text"));
+
+            $news->setCategory(StringHelper::getElemStrArr($item, "category"));
+            $news->setAuthor(StringHelper::getElemStrArr($item, "author"));
 
             if (array_key_exists("image", $item) && is_array($item["image"])) {
                 $images = $item["image"];

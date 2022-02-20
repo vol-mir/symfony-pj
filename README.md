@@ -10,5 +10,6 @@ $ cd symfony-pj
 $ cp app/.env.example app/.env
 $ docker-compose up --build
 $ docker exec -it php74-container bash
+$ composer install
 $ sh makedb.sh
 ```
