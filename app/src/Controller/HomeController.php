@@ -106,4 +106,42 @@ class HomeController extends AbstractController
             "message" => "Downloaded $addingCounNews news"
         ]);
     }
+
+    /**
+     * Show news
+     *
+     * @Route("/news/{news_id}/show", methods="GET", name="news_show")
+     *
+     * @param News $news
+     *
+     * @return Response
+     */
+    public function show(News $news): Response
+    {
+        return $this->render('home/news_show.html.twig', [
+            'news' => $news
+        ]);
+    }
+
+    /**
+     * Delete news
+     *
+     * @Route("/news/{id}/delete", methods="POST", name="news_delete")
+     *
+     * @param Request $request
+     * @param ManagerRegistry $doctrine
+     * @param News $news
+     *
+     * @return JsonResponse
+     */
+    public function delete(Request $request, ManagerRegistry $doctrine, News $news): JsonResponse
+    {
+        if ($this->isCsrfTokenValid('delete-item', $request->request->get('_token'))) {
+            $entityManager = $doctrine->getManager();
+            $entityManager->remove($news);
+            $entityManager->flush();
+        }
+
+        return new JsonResponse(['message' => 'News successfully deleted!']);
+    }
 }

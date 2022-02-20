@@ -95,6 +95,14 @@ class News
      */
     private $created_at;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max=255)
+     */
+    private $image;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -195,5 +203,17 @@ class News
     public function prePersist(): void
     {
         $this->created_at = new DateTime();
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
     }
 }

@@ -88,6 +88,19 @@ class NewsFromUrl
                 array_key_exists("author", $item) ? $item["author"] : null
             );
 
+            if (array_key_exists("image", $item) && is_array($item["image"])) {
+                $images = $item["image"];
+
+                $imagePath = null;
+                if (array_key_exists("url", $images)) {
+                    $imagePath = $images["url"];
+                } elseif (array_key_exists(0, $images) && array_key_exists("url", $images[0])) {
+                    $imagePath = $images[0]["url"];
+                }
+
+                $news->setImage($imagePath);
+            }
+
             $entityManager->persist($news);
             $countAddNews++;
         }

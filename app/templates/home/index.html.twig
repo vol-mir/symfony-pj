@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Home{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb float-sm-right">
+    <li class="breadcrumb-item active"><a href="{{ path('home') }}">Home</a></li>
+</ol>
+{% endblock %}
 
 {% block body %}
 <div class="row">
@@ -44,6 +50,9 @@
     <!-- /.col -->
 </div>
 <!-- /.row -->
+
+    {% include 'modals/_delete.html.twig' %}
+
 {% endblock %}
 
 {% block javascripts %}
@@ -91,6 +100,33 @@
                     toastr.error("Something gone wrong");
                 });
 	        });
+
+            $("#news").on("click", ".modal-delete-dialog", function () {
+                $("#btn-modal-delete").attr("data-confirm-delete-id", $(this).attr("data-id"));
+                $("#modal-delete").modal("show");
+            });
+
+            $("#modal-delete").on("click", "#btn-modal-delete", function () {
+                let url = "{{ path('news_delete', { id: 'fileId_' }) }}";
+                url = url.replace('fileId_', $(this).attr('data-confirm-delete-id'));
+
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    data: {
+                        "_method": "post",
+                        "_token": "{{ csrf_token('delete-item') }}",
+                    },
+                    dataType: 'json'
+                }).done(function (data) {
+                    table.ajax.reload(null, false);
+                    toastr.success(data.message);
+                }).fail(function (jqXHR, textStatus) {
+                    toastr.error("Something gone wrong");
+                });
+                $('#btn-modal-delete').attr("data-confirm-delete-id", null);
+                $('#modal-delete').modal('hide');
+            });
         });
     </script>
 

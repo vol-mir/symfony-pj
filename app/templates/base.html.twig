@@ -74,7 +74,7 @@
                                 <a href="{{ path('home') }}" class="nav-link active">
                                     <i class="nav-icon fas fa-tachometer-alt"></i>
                                     <p>
-                                        Dashboard
+                                        Home
                                     </p>
                                 </a>
                             </li>
@@ -91,7 +91,10 @@
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0">{% block title %}Dashboard{% endblock %}</h1>
+                                <h1 class="m-0">{% block title %}Home{% endblock %}</h1>
+                            </div>
+                            <div class="col-sm-6">
+                                {% block breadcrumb %}{% endblock %}
                             </div>
                             <!-- /.col -->
                         </div>

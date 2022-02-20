@@ -1,0 +1,9 @@
+<div class='btn-group btn-group-sm dropleft'>
+    {% if urlShow %}
+        <a href='{{ urlShow }}' class='btn btn-secondary' title="Show"><i class='fas fa-eye'></i></a'></i></a>
+    {% endif %}
+    {% if idDelete %}
+        <button type='button' class='btn btn-sm btn-danger float-left modal-delete-dialog' data-toggle='modal'
+            data-id='{{ idDelete }}' title="Delete"><i class='fas fa-trash'></i></button>
+    {% endif %}  
+</div>
