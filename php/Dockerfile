@@ -13,3 +13,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN curl -sS https://get.symfony.com/cli/installer | bash
 RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+
+# RUN docker exec -it php74-container bin/console doctrine:database:create --if-not-exists
+# RUN php /var/www/app/bin/console doctrine:database:create --if-not-exists --no-interaction;
+# RUN php /var/www/app/bin/console doctrine:migrations:migrate --no-interaction;
