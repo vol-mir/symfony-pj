@@ -47,7 +47,11 @@ class DataTableNews implements TableInterface
 
                 switch ($column["name"]) {
                     case "newsId":
-                        $elementTemp = "<a href=$urlShow title='show news'>" . $item->getNewsId() ."</a>";
+                        $elementTemp = $this->twig->render('default/_ahref.html.twig', [
+                            'url' => $urlShow,
+                            'title' => 'show news',
+                            'text' => $item->getNewsId()
+                        ]);
                         $dataTemp[] = $elementTemp;
                         break;
 
@@ -72,7 +76,14 @@ class DataTableNews implements TableInterface
                         $dataTemp[] = $elementTemp;
                         break;
                     case "category":
-                        $elementTemp = $item->getCategory() ? "<span class='badge badge-primary'>" . $item->getCategory() . "</span>" : "-";
+                        $elementTemp = "-";
+
+                        if ($item->getCategory()) {
+                            $elementTemp = $this->twig->render('default/_badge.html.twig', [
+                                'type' => 'primary',
+                                'value' => $item->getCategory()
+                            ]);
+                        }
                         $dataTemp[] = $elementTemp;
                         break;
 
