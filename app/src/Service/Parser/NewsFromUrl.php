@@ -40,9 +40,14 @@ class NewsFromUrl
      */
     public function getRBCNews(int $countNews)
     {
+        $countAddNews = 0;
         $rbc_url = "https://rssexport.rbc.ru/rbcnews/news/$countNews/full.rss";
 
         $xmlPage = $this->transport->get($rbc_url);
+
+        if (!$xmlPage) {
+            return $countAddNews;
+        }
 
         $newsFactory = new RBCNewsFactory();
         $news = $newsFactory->createListNews();
@@ -58,7 +63,7 @@ class NewsFromUrl
      */
     public function addNewsDB($listNews)
     {
-        if (!is_array($listNews["channel"])) {
+        if (count($listNews) === 0 || !is_array($listNews["channel"])) {
             return 0;
         }
         $channel = $listNews["channel"];

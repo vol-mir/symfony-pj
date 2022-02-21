@@ -2,6 +2,8 @@
 
 namespace App\Service\Parser\Transport;
 
+use App\Helper\StringHelper;
+
 /**
  * Class Curl
  * @package App\Service\Parser\Transport
@@ -75,7 +77,7 @@ class Curl implements TransportInterface
             }
         }
 
-        if ($result === "") {
+        if (StringHelper::emptyStr($result)) {
             return null;
         }
 

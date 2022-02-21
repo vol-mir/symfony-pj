@@ -15,17 +15,18 @@ class RBCNews implements NewsList
      * Get list news
      * @param  string $xmlPage
      * @return array|null
-     */
+     */    
     public function getListNews(string $xmlPage)
     {
-        if (StringHelper::emptyStr($xmlPage)) {
+        try {
+            $xmlPage = preg_replace("/rbc_news:/", "", $xmlPage);
+            $xml = simplexml_load_string('$xmlPage');
+            $json = json_encode($xml);
+            $array = json_decode($json, true);
+        } catch (\Exception $e) {
+            echo "\n Exception caught - ", $e->getMessage();
             return null;
         }
-
-        $xmlPage = preg_replace("/rbc_news:/", "", $xmlPage);
-        $xml = simplexml_load_string($xmlPage);
-        $json = json_encode($xml);
-        $array = json_decode($json, true);
 
         return $array;
     }
