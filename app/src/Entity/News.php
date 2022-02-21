@@ -103,6 +103,14 @@ class News
      */
     private $image;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max=255)
+     */
+    private $link_resource;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -213,6 +221,18 @@ class News
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getLinkResource(): ?string
+    {
+        return $this->link_resource;
+    }
+
+    public function setLinkResource(?string $link_resource): self
+    {
+        $this->link_resource = $link_resource;
 
         return $this;
     }

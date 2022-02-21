@@ -13,6 +13,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RBCNews implements NewsList
 {
+    const LINK_RESOURCE = "rbc.ru";
+
     /**
      * Get list news
      * @param  string $xmlPage
@@ -85,11 +87,22 @@ class RBCNews implements NewsList
                 $news->setImage($imagePath);
             }
 
+            $news->setLinkResource($this->getLinkResource());
+
             $entityManager->persist($news);
             $countAddNews++;
         }
         $entityManager->flush();
 
         return $countAddNews;
+    }
+
+    /**
+     * Get link resorce
+     * @return string
+     */
+    public function getLinkResource(): string
+    {
+        return self::LINK_RESOURCE;
     }
 }

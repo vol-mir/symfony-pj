@@ -24,4 +24,10 @@ interface NewsList
      * @return int
      */
     public function addNewsDB(ManagerRegistry $doctrine, array $listNews): int;
+
+    /**
+     * Get link resorce
+     * @return string
+     */
+    public function getLinkResource(): string;
 }

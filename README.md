@@ -1,7 +1,9 @@
 # Symfony PJ
 
 ## About Project
-The application is developed using Symfony.
+News Parser. The application is developed using Symfony.
+- To add a new resource, you need to use the NewsResource factory in the parser service
+- In NewsFromUrl::getRBCNews(int $countNews) - you can set the number of news 
 
 
 ## Quick Start
