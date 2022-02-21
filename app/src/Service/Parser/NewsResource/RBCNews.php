@@ -20,7 +20,7 @@ class RBCNews implements NewsList
     {
         try {
             $xmlPage = preg_replace("/rbc_news:/", "", $xmlPage);
-            $xml = simplexml_load_string('$xmlPage');
+            $xml = simplexml_load_string($xmlPage);
             $json = json_encode($xml);
             $array = json_decode($json, true);
         } catch (\Exception $e) {
