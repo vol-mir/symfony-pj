@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\News;
-use App\Service\DataTable\DataTableNews;
 use App\Service\Parser\NewsFromUrl;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Serializer\Normalizer\NewsNormalizer;
 
 /**
  * Class HomeController
@@ -37,14 +37,14 @@ class HomeController extends AbstractController
      *
      * @param Request $request
      * @param ManagerRegistry $doctrine
-     * @param DataTableNews $dataTableNews
+     * @param NewsNormalizer $normalizer
      *
      * @return JsonResponse
      */
     public function listDatatableAction(
         Request $request,
         ManagerRegistry $doctrine,
-        DataTableNews $dataTableNews
+        NewsNormalizer $normalizer
     ): JsonResponse {
         // Get the parameters from DataTable Ajax Call
         $draw = (int) $request->request->get("draw");
@@ -66,16 +66,16 @@ class HomeController extends AbstractController
             ->getListForDT($start, $length, $orders, $search, $columns);
 
         $listOblects = $results["listOblects"];
-        $filteredObjectsCount = $results["listCount"];
-        $totalObjectsCount = $results["countRecords"];
-        $data = $dataTableNews->getData($listOblects, $columns);
-    
+        foreach ($listOblects as $item) {
+            $data[] = $normalizer->normalize($item);
+        }
+
         // Construct response
         $response = [
             "draw" => $draw,
-            "recordsTotal" => $totalObjectsCount,
-            "recordsFiltered" => $filteredObjectsCount,
-            "data" => $data,
+            "recordsTotal" => $results["countRecords"],
+            "recordsFiltered" => $results["listCount"],
+            "data" => $data ?? [],
         ];
 
         $returnResponse = new JsonResponse();
