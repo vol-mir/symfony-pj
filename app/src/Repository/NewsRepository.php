@@ -61,7 +61,7 @@ class NewsRepository extends ServiceEntityRepository
      * @param  array $search
      * @return array
      */
-    public function getListForDT($start, $length, $orders, $search): array
+    public function getListForDataTable($start, $length, $orders, $search): array
     {
         // Create Main Query
         $query = $this->createQueryBuilder("n");
@@ -110,11 +110,11 @@ class NewsRepository extends ServiceEntityRepository
         }
 
         // Execute
-        $listOblects = $query->getQuery()->getResult();
+        $listObjects = $query->getQuery()->getResult();
         $listCount = $countQuery->getQuery()->getSingleScalarResult();
 
         return [
-            'listOblects' => $listOblects, 
+            'listObjects' => $listObjects,
             'listCount' => $listCount,
             'countRecords' => $this->getCountRecords()
         ];

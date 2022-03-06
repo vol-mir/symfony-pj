@@ -25,5 +25,5 @@ interface TransportInterface
      * @throws TransportException
      * @throws NotFoundException
      */
-    public function get(string $urlResource);
+    public function get(string $urlResource): ?string;
 }

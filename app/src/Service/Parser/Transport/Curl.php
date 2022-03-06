@@ -32,11 +32,10 @@ class Curl implements TransportInterface
     /**
      * Set request url
      * @param  string $urlResource
-     * @return void
+     * @return Curl
      */
-    private function setRequestUrl(string $urlResource)
+    private function setRequestUrl(string $urlResource): Curl
     {
-        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($this->curl, CURLOPT_HEADER, false);
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($this->curl, CURLOPT_URL, $urlResource);
@@ -57,7 +56,7 @@ class Curl implements TransportInterface
      * @throws NotFoundException
      * @throws TransportException
      */
-    private function execute()
+    private function execute(): ?string
     {
         $result = curl_exec($this->curl);
         $code = (int) curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
@@ -72,9 +71,9 @@ class Curl implements TransportInterface
 
             if (in_array($code, [400, 404])) {
                 throw new NotFoundException($errorMessage);
-            } else {
-                throw new TransportException($errorMessage);
             }
+
+            throw new TransportException($errorMessage);
         }
 
         if (StringHelper::emptyStr($result)) {
@@ -86,10 +85,13 @@ class Curl implements TransportInterface
 
     /**
      * Get resource page
-     * @param  string $urlResource
-     * @return void
+     * @param string $urlResource
+     *
+     * @return string|null
+     * @throws NotFoundException
+     * @throws TransportException
      */
-    public function get(string $urlResource)
+    public function get(string $urlResource): ?string
     {
         return $this->setRequestUrl($urlResource)->execute();
     }

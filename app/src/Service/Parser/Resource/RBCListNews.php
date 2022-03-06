@@ -1,65 +1,49 @@
 <?php
 
-namespace App\Service\Parser\NewsResource;
+namespace App\Service\Parser\Resource;
 
 use App\Entity\News;
 use App\Helper\DateHelper;
 use App\Helper\StringHelper;
-use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
- * Class RBCNews
- * @package App\Service\Parser\NewsResource
+ * Class RBCListNews
+ * @package App\Service\Parser\Resource
  */
-class RBCNews implements NewsList
+class RBCListNews implements ListNews
 {
-    const LINK_RESOURCE = "rbc.ru";
+    private const LINK_RESOURCE = "rbc.ru";
 
     /**
-     * Get list news
+     * Get list news from xml page
      * @param  string $xmlPage
      * @return array|null
-     */    
-    public function getListNews(string $xmlPage)
+     */
+    public function getListNews(string $xmlPage): ?array
     {
         try {
             $xmlPage = preg_replace("/rbc_news:/", "", $xmlPage);
             $xml = simplexml_load_string($xmlPage);
             $json = json_encode($xml);
-            $array = json_decode($json, true);
-        } catch (\Exception $e) {
+            $arrayNews = json_decode($json, true);
+        } catch (Exception $e) {
             echo "\n Exception caught - ", $e->getMessage();
             return null;
         }
 
-        return $array;
-    }
-
-    /**
-     * Add news DB
-     * @param  ManagerRegistry $doctrine
-     * @param  array $listNews
-     * @return int
-     */
-    public function addNewsDB(ManagerRegistry $doctrine, array $listNews): int
-    {
-        if (count($listNews) === 0 || !is_array($listNews["channel"])) {
-            return 0;
+        if (count($arrayNews) === 0 || !is_array($arrayNews["channel"])) {
+            return null;
         }
-        $channel = $listNews["channel"];
+        $channel = $arrayNews["channel"];
 
         if (!is_array($channel["item"])) {
-            return 0;
+            return null;
         }
         $items = $channel["item"];
 
-        $entityManager = $doctrine->getManager();
-        $countAddNews = 0;
-
+        $listNews = [];
         foreach ($items as $item) {
-            if ($entityManager->getRepository(News::class)->getCountRecordsForInnerId($item["news_id"]) > 0) {
-                continue;
-            }
 
             $news = new News();
             $news->setNewsId(StringHelper::getElemStrArr($item, "news_id"));
@@ -89,16 +73,13 @@ class RBCNews implements NewsList
 
             $news->setLinkResource($this->getLinkResource());
 
-            $entityManager->persist($news);
-            $countAddNews++;
+            $listNews[] = $news;
         }
-        $entityManager->flush();
-
-        return $countAddNews;
+        return $listNews;
     }
 
     /**
-     * Get link resorce
+     * Get link resource
      * @return string
      */
     public function getLinkResource(): string

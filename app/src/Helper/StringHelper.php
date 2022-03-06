@@ -15,7 +15,7 @@ class StringHelper
      */
     public static function emptyStr($str): bool
     {
-        return is_string($str) && strlen(trim($str)) === 0;
+        return is_string($str) && trim($str) === '';
     }
     
     /**
@@ -24,10 +24,10 @@ class StringHelper
      * @param  string $key
      * @return string
      */
-    public static function getElemStrArr(array $arr, string $key)
+    public static function getElemStrArr(array $arr, string $key): string
     {
         $value = "-";
-        if (array_key_exists($key, $arr) && gettype($arr[$key]) === 'string' && !self::emptyStr($arr[$key])) {
+        if (array_key_exists($key, $arr) && is_string($arr[$key]) && !self::emptyStr($arr[$key])) {
             $value = $arr[$key];
         }
 

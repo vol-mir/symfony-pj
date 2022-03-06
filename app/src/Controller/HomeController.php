@@ -3,14 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\News;
-use App\Service\Parser\NewsFromUrl;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Serializer\Normalizer\NewsNormalizer;
+use App\Service\Parser\Transport\NotFoundException;
+use App\Service\Parser\Transport\TransportException;
+use App\Service\DownloadNews;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Serializer\Normalizer\NewsNormalizer;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class HomeController
@@ -42,40 +44,41 @@ class HomeController extends AbstractController
      * @return JsonResponse
      */
     public function listDatatableAction(
-        Request $request,
+        Request         $request,
         ManagerRegistry $doctrine,
-        NewsNormalizer $normalizer
-    ): JsonResponse {
+        NewsNormalizer  $normalizer
+    ): JsonResponse
+    {
         // Get the parameters from DataTable Ajax Call
-        $draw = (int) $request->request->get("draw");
-        $start = (int) $request->request->get("start");
-        $length = (int) $request->request->get("length");
-        $search = (array) $request->request->get("search");
-        $orders = (array) $request->request->get("order");
-        $columns = (array) $request->request->get("columns");
+        $draw = (int)$request->request->get('draw');
+        $start = (int)$request->request->get('start');
+        $length = (int)$request->request->get('length');
+        $search = (array)$request->request->get('search');
+        $orders = (array)$request->request->get('order');
+        $columns = (array)$request->request->get('columns');
 
         // Orders
         foreach ($orders as $key => $order) {
-            $orderColumn = $order["column"];
-            $orders[$key]["name"] = $columns[$orderColumn]["name"];
+            $orderColumn = $order['column'];
+            $orders[$key]['name'] = $columns[$orderColumn]['name'];
         }
 
         $entityManager = $doctrine->getManager();
         $results = $entityManager
             ->getRepository(News::class)
-            ->getListForDT($start, $length, $orders, $search, $columns);
+            ->getListForDataTable($start, $length, $orders, $search);
 
-        $listOblects = $results["listOblects"];
-        foreach ($listOblects as $item) {
+        $listObjects = $results['listObjects'];
+        foreach ($listObjects as $item) {
             $data[] = $normalizer->normalize($item);
         }
 
         // Construct response
         $response = [
-            "draw" => $draw,
-            "recordsTotal" => $results["countRecords"],
-            "recordsFiltered" => $results["listCount"],
-            "data" => $data ?? [],
+            'draw' => $draw,
+            'recordsTotal' => $results['countRecords'],
+            'recordsFiltered' => $results['listCount'],
+            'data' => $data ?? [],
         ];
 
         $returnResponse = new JsonResponse();
@@ -89,17 +92,18 @@ class HomeController extends AbstractController
      *
      * @Route("/download/rbc/news",  methods="POST", name="download_rbc_news")
      *
-     * @param Request $request
-     * @param NewsFromUrl $newsFromUrl
+     * @param \App\Service\DownloadNews $parserNews
      *
      * @return JsonResponse
+     * @throws NotFoundException
+     * @throws TransportException
      */
-    public function downloadRBCNews(Request $request, NewsFromUrl $newsFromUrl): JsonResponse
+    public function downloadRBCNews(DownloadNews $parserNews): JsonResponse
     {
-        $addingCounNews = $newsFromUrl->getRBCNews(15);
+        $addingCountNews = $parserNews->downloadRBCNews();
 
         return new JsonResponse([
-            "message" => "Downloaded $addingCounNews news"
+            'message' => "Downloaded $addingCountNews news"
         ]);
     }
 

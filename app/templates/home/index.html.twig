@@ -62,6 +62,7 @@
 
             let tableNews = '#news'
             let modalDelete = '#modal-delete'
+            let btnModalDelete = '#btn-modal-delete'
 
             let table = $(tableNews).DataTable({
                 'columnDefs': [
@@ -88,7 +89,7 @@
                 'order': [[0, 'asc']],
             })
 
-            $(`#downloadNewsForRBC`).on('click', function () {
+            $('#download-rbc-news').on('click', function () {
                 $.ajax({
                     type: 'POST',
                     url: "{{ path('download_rbc_news') }}",
@@ -102,11 +103,11 @@
             })
 
             $(tableNews).on('click', '.modal-delete-dialog', function () {
-                $('#btn-modal-delete').attr('data-confirm-delete-id', $(this).attr('data-id'))
+                $(btnModalDelete).attr('data-confirm-delete-id', $(this).attr('data-id'))
                 $(modalDelete).modal('show')
             })
 
-            $(modalDelete).on('click', '#btn-modal-delete', function () {
+            $(modalDelete).on('click', btnModalDelete, function () {
                 let url = "{{ path('news_delete', { id: 'fileId_' }) }}"
                 url = url.replace('fileId_', $(this).attr('data-confirm-delete-id'))
 
@@ -124,7 +125,7 @@
                 }).fail(function () {
                     toastr.error('Something gone wrong')
                 })
-                $('#btn-modal-delete').attr('data-confirm-delete-id', null)
+                $(btnModalDelete).attr('data-confirm-delete-id', null)
                 $(modalDelete).modal('hide')
             })
         })(jQuery)
