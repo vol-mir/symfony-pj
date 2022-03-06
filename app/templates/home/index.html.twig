@@ -21,11 +21,11 @@
                 <table id="news" class="table table-bordered table-striped table-hover table-sm">
                     <thead>
                         <tr>
-                            <th width="90px">ID news</th>
+                            <th class="width90">ID news</th>
                             <th>Title</th>
-                            <th width="190px">Date news</th>
+                            <th class="width190">Date news</th>
                             <th>Full text</th>
-                            <th width="150px">Category</th>
+                            <th class="width150">Category</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -57,77 +57,77 @@
 
 {% block javascripts %}
     <script>
-        $(function () {
-            let table = $("#news").DataTable({
-                "columnDefs": [
-                    {"name": "newsId", "targets": 0},
-                    {"name": "title", "targets": 1},
-                    {"name": "newsDate", "targets": 2},
-                    {"name": "fullText", "targets": 3},
-                    {"name": "category", "targets": 4},
-                    {"name": "control", "targets": 5, "orderable": false, "searchable": false},
+        (function ($) {
+            'use strict'
+
+            let tableNews = '#news'
+            let modalDelete = '#modal-delete'
+
+            let table = $(tableNews).DataTable({
+                'columnDefs': [
+                    {'name': 'newsId', 'targets': 0},
+                    {'name': 'title', 'targets': 1},
+                    {'name': 'newsDate', 'targets': 2},
+                    {'name': 'fullText', 'targets': 3},
+                    {'name': 'category', 'targets': 4},
+                    {'name': 'control', 'targets': 5, 'orderable': false, 'searchable': false},
                 ],
-                "ajax": {
-                    "url": "{{ path('datatable_news') }}",
-                    "type": "POST"
+                'ajax': {
+                    'url': "{{ path('datatable_news') }}",
+                    'type': 'POST'
                 },
-                "stateSave": true,
-                "processing": true,
-                "serverSide": true,
-                "responsive": true,
-                "autoWidth": false,
-                "paging": true,
-                "info": true,
-                "searching": true,
-                "pageLength": 20,
-                "order": [[0, 'asc']],
-            });
+                'stateSave': true,
+                'processing': true,
+                'serverSide': true,
+                'responsive': true,
+                'autoWidth': false,
+                'paging': true,
+                'info': true,
+                'searching': true,
+                'pageLength': 20,
+                'order': [[0, 'asc']],
+            })
 
-            $("#downloadNewsForRBC").on("click", function() {
-                let url = "{{ path('download_rbc_news') }}";
+            $(`#downloadNewsForRBC`).on('click', function () {
                 $.ajax({
-                    type: "post",
-                    url: url,
-                    data: {
-                        "_method": "post",
-                        "_token": "{{ csrf_token('download-rbc-news') }}",
-                    },
-                    dataType: "json"
+                    type: 'POST',
+                    url: "{{ path('download_rbc_news') }}",
+                    dataType: 'json'
                 }).done(function (data) {
-                    table.ajax.reload(null, false);
-                    toastr.success(data.message);
-                }).fail(function (jqXHR, textStatus) {
-                    toastr.error("Something gone wrong");
-                });
-	        });
+                    table.ajax.reload()
+                    toastr.success(data.message)
+                }).fail(function () {
+                    toastr.error('Something gone wrong')
+                })
+            })
 
-            $("#news").on("click", ".modal-delete-dialog", function () {
-                $("#btn-modal-delete").attr("data-confirm-delete-id", $(this).attr("data-id"));
-                $("#modal-delete").modal("show");
-            });
+            $(tableNews).on('click', '.modal-delete-dialog', function () {
+                $('#btn-modal-delete').attr('data-confirm-delete-id', $(this).attr('data-id'))
+                $(modalDelete).modal('show')
+            })
 
-            $("#modal-delete").on("click", "#btn-modal-delete", function () {
-                let url = "{{ path('news_delete', { id: 'fileId_' }) }}";
-                url = url.replace('fileId_', $(this).attr('data-confirm-delete-id'));
+            $(modalDelete).on('click', '#btn-modal-delete', function () {
+                let url = "{{ path('news_delete', { id: 'fileId_' }) }}"
+                url = url.replace('fileId_', $(this).attr('data-confirm-delete-id'))
 
                 $.ajax({
-                    type: 'post',
+                    type: 'POST',
                     url: url,
                     data: {
-                        "_method": "post",
-                        "_token": "{{ csrf_token('delete-item') }}",
+                        '_method': 'post',
+                        '_token': "{{ csrf_token('delete-item') }}",
                     },
                     dataType: 'json'
                 }).done(function (data) {
-                    table.ajax.reload(null, false);
-                    toastr.success(data.message);
-                }).fail(function (jqXHR, textStatus) {
-                    toastr.error("Something gone wrong");
-                });
-                $('#btn-modal-delete').attr("data-confirm-delete-id", null);
-                $('#modal-delete').modal('hide');
-            });
-        });
+                    table.ajax.reload()
+                    toastr.success(data.message)
+                }).fail(function () {
+                    toastr.error('Something gone wrong')
+                })
+                $('#btn-modal-delete').attr('data-confirm-delete-id', null)
+                $(modalDelete).modal('hide')
+            })
+        })(jQuery)
     </script>
 
 {% endblock %}

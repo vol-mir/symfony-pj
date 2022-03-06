@@ -96,10 +96,6 @@ class HomeController extends AbstractController
      */
     public function downloadRBCNews(Request $request, NewsFromUrl $newsFromUrl): JsonResponse
     {
-        if (!$this->isCsrfTokenValid('download-rbc-news', $request->request->get('_token'))) {
-            die;
-        }
-
         $addingCounNews = $newsFromUrl->getRBCNews(15);
 
         return new JsonResponse([
