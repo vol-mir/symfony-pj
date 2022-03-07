@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-    nginx-php74-mysql8-node:
+    nginx-php74-node:
 
 services:
 
@@ -17,8 +17,9 @@ services:
         depends_on:
             - php74-service
             - mysql8-service
+            - postgres133-service
         networks:
-            - nginx-php74-mysql8-node
+            - nginx-php74-node
 
     # php
     php74-service:
@@ -31,7 +32,7 @@ services:
         volumes:
             - ./app:/var/www/project
         networks:
-            - nginx-php74-mysql8-node
+            - nginx-php74-node
 
     # mysql
     mysql8-service:
@@ -47,6 +48,23 @@ services:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_PASSWORD: root
         networks:
-            - nginx-php74-mysql8-node
+            - nginx-php74-node
+
+    # postgres
+    postgres133-service:
+        image: postgres:13.3
+        container_name: postgres133-container
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./postgresql:/var/lib/postgresql 
+        restart: always # always restart unless stopped manually
+        environment:
+            POSTGRES_DB: "postgres"
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: "postgres"
+        networks:
+            - nginx-php74-node
+
 
 

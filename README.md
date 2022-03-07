@@ -2,9 +2,7 @@
 
 ## About Project
 News Parser. The application is developed using Symfony.
-- To add a new resource, you need to use the NewsResource factory in the parser service
-- In NewsFromUrl::getRBCNews(int $countNews) - you can set the number of news 
-
+http://127.0.0.1:8080/
 
 ## Quick Start
 ```shell
