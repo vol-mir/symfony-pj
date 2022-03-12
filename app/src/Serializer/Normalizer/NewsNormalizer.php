@@ -3,7 +3,6 @@
 namespace App\Serializer\Normalizer;
 
 use App\Helper\DateHelper;
-use Twig\Environment;
 use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -13,23 +12,16 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class NewsNormalizer implements NormalizerInterface, CacheableSupportsMethodInterface
 {
-    /** @var Environment */
-    private $twig;
 
     /** @var UrlGeneratorInterface */
     private $router;
 
     /**
      * DataTableNews constructor
-     * @param  Environment $twig
      * @param  UrlGeneratorInterface $router
      * @return void
      */
-    public function __construct(
-        Environment $twig,
-        UrlGeneratorInterface $router
-    ) {
-        $this->twig = $twig;
+    public function __construct(UrlGeneratorInterface $router) {
         $this->router = $router;
     }
     
@@ -47,11 +39,11 @@ class NewsNormalizer implements NormalizerInterface, CacheableSupportsMethodInte
             "news_id" => $object->getNewsId(),
         ]);
 
-        $newsId = $this->twig->render("default/_ahref.html.twig", [
+        $newsId = [
             "url" => $urlShow,
             "title" => "show news",
             "text" => $object->getNewsId(),
-        ]);
+        ];
 
         $title = $object->getTitle();
 
@@ -61,21 +53,12 @@ class NewsNormalizer implements NormalizerInterface, CacheableSupportsMethodInte
 
         $fullText = mb_strimwidth($object->getFullText(), 0, 200, "...");
 
-        $category = "-";
-        if ($object->getCategory()) {
-            $category = $this->twig->render("default/_badge.html.twig", [
-                "type" => "primary",
-                "value" => $object->getCategory(),
-            ]);
-        }
+        $category = $object->getCategory() ?? '-';
 
-        $control = $this->twig->render(
-            "default/_table_group_btn_sd.html.twig",
-            [
-                "urlShow" => $urlShow,
-                "idDelete" => $object->getId(),
-            ]
-        );
+        $control = [
+            "urlShow" => $urlShow,
+            "idDelete" => $object->getId(),
+        ];
 
         return [$newsId, $title, $newsDate, $fullText, $category, $control];
     }

@@ -66,12 +66,34 @@
 
             let table = $(tableNews).DataTable({
                 'columnDefs': [
-                    {'name': 'newsId', 'targets': 0},
+                    {
+                        'render': function (data) {
+                            return "<a href='" + data['url'] + "' title='" + data['title'] + "'>" + data['text'] + "</a>";
+                        },
+                        'name': 'newsId',
+                        'targets': 0
+                    },
                     {'name': 'title', 'targets': 1},
                     {'name': 'newsDate', 'targets': 2},
                     {'name': 'fullText', 'targets': 3},
-                    {'name': 'category', 'targets': 4},
-                    {'name': 'control', 'targets': 5, 'orderable': false, 'searchable': false},
+                    {
+                        'render': function (data) {
+                            return "<span class='badge badge-primary'>" + data + "</span>";
+                        },
+                        'name': 'category',
+                        'targets': 4
+                    },
+                    {
+                        'render': function (data) {
+                            let urlShow = data['urlShow'] ? "<a href='" + data['urlShow'] + "' class='btn btn-secondary' title='show'><i class='fas fa-eye'></i></a></i></a>" : '';
+                            let idDelete = data['idDelete'] ? "<button type='button' class='btn btn-sm btn-danger float-left modal-delete-dialog' data-toggle='modal' data-id='" + data['idDelete'] + "' title='delete'><i class='fas fa-trash'></i></button>" : '';
+                            return "<div class='btn-group btn-group-sm dropleft'>" + urlShow + idDelete + "</div>";
+                        },
+                        'name': 'control',
+                        'targets': 5,
+                        'orderable': false,
+                        'searchable': false
+                    },
                 ],
                 'ajax': {
                     'url': "{{ path('datatable_news') }}",
