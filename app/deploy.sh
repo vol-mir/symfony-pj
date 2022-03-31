@@ -44,6 +44,8 @@ while true; do
             npm install n -g
 
             yarn add --dev @symfony/webpack-encore
+            yarn add webpack-notifier --dev
+            yarn encore dev
             yarn add @babel/preset-react --dev
             yarn add react-router-dom
             yarn add --dev react react-dom prop-types axios
