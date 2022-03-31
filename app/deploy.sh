@@ -9,7 +9,7 @@ Deploying process will:
     ${SCRIPT_DIR}/vendor
 2. Setup PHP vendor dependencies
 3. Remove all cache from directory:
-    ${SCRIPT_DIR}/data/cache
+    ${SCRIPT_DIR}/var/cache
 4. Apply all DB migrations
 5. Install Node vendor dependencies
 
@@ -26,6 +26,8 @@ while true; do
 
             # Install PHP vendor dependencies
             rm -rf vendor
+            rm -rf var/cache/*
+            rm -rf node_modules/*
             composer install
 
             # Apply migrations
@@ -50,8 +52,6 @@ while true; do
             yarn add react-router-dom
             yarn add --dev react react-dom prop-types axios
             yarn add @babel/plugin-proposal-class-properties @babel/plugin-transform-runtime
-
-            sudo chmod -R 0777 data
             
         exit;;
         [Nn]* )
