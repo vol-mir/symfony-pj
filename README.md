@@ -7,11 +7,10 @@ http://127.0.0.1:8080/
 ## Quick Start
 ```shell
 $ cd symfony-pj
-$ cp app/.env.example app/.env
 $ docker-compose up --build
 $ docker exec -it php74-container bash
-$ composer install
-$ sh makedb.sh
+$ sh deploy.sh
 ```
+
 ## Demo screen
 https://github.com/vol-mir/symfony-pj/tree/master/app/public/demo
