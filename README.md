@@ -2,7 +2,7 @@
 
 ## About Project
 News Parser. The application is developed using Symfony.
-http://127.0.0.1:8080/
+http://127.0.0.1:8085/
 
 ## Quick Start
 ```shell

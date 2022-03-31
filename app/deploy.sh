@@ -37,11 +37,13 @@ while true; do
             php bin/console doctrine:migration:migrate --no-interaction
 
             # Install nodejs, npm, yarn and node version switcher "n"
+            apt-get update
             apt-get install -y nodejs npm
             npm cache clean --force
             npm install -g yarn
             npm install n -g
 
+            yarn add --dev @symfony/webpack-encore
             yarn add @babel/preset-react --dev
             yarn add react-router-dom
             yarn add --dev react react-dom prop-types axios
