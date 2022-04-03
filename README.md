@@ -11,6 +11,7 @@ $ docker-compose up --build
 $ docker exec -it php74-container bash
 $ sh deploy.sh
 $ yarn encore dev --watch
+$ ./node_modules/.bin/eslint assets
 ```
 
 ## Demo screen
