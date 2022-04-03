@@ -23,24 +23,24 @@ class NewsRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, News::class);
     }
-    
+
     /**
-     * Get count records
-     * @return void
-     */
-    public function getCountRecords()
+     * Get news 
+     */    
+    public function getLastNews($limit)
     {
         return $this
             ->createQueryBuilder('n')
-            ->select("count(n.id)")
+            ->orderBy("n.date_news", 'DESC')
+            ->setFirstResult(0)
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getArrayResult();
     }
 
     /**
      * Count news for inner news ID
-     * @param  mixed $newsId
-     * @return void
+     * @param  int $newsId
      */    
     public function getCountRecordsForInnerId($newsId)
     {
@@ -52,71 +52,5 @@ class NewsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
-
-    /**
-     * Get list for DT
-     * @param  int $start
-     * @param  int $length
-     * @param  array $orders
-     * @param  array $search
-     * @return array
-     */
-    public function getListForDataTable($start, $length, $orders, $search): array
-    {
-        // Create Main Query
-        $query = $this->createQueryBuilder("n");
-
-        // Create Count Query
-        $countQuery = $this->createQueryBuilder("n");
-        $countQuery->select("COUNT(n)");
-
-        // Fields Search
-        if ($search["value"] !== "") {
-            $searchItem = $search["value"];
-            $searchQuery = 'n.news_id LIKE \'%' . $searchItem . '%\'';
-            $searchQuery .= ' or n.title LIKE \'%' . $searchItem . '%\'';
-            $searchQuery .= ' or n.date_news LIKE \'%' . $searchItem . '%\'';
-            $searchQuery .= ' or n.full_text LIKE \'%' . $searchItem . '%\'';
-            $searchQuery .= ' or n.category LIKE \'%' . $searchItem . '%\'';
-
-            $query->andWhere($searchQuery);
-            $countQuery->andWhere($searchQuery);
-        }
-
-        // Limit
-        $query->setFirstResult($start)->setMaxResults($length);
-
-        // Order
-        foreach ($orders as $key => $order) {
-            if ($order["name"] !== "") {
-                switch ($order["name"]) {
-                    case "newsId":
-                        $query->orderBy("n.news_id", $order["dir"]);
-                        break;
-                    case "title":
-                        $query->orderBy("n.title", $order["dir"]);
-                        break;
-                    case "newsDate":
-                        $query->orderBy("n.date_news", $order["dir"]);
-                        break;
-                    case "fullText":
-                        $query->orderBy("n.full_text", $order["dir"]);
-                        break;
-                    case "category":
-                        $query->orderBy("n.category", $order["dir"]);
-                        break;
-                }
-            }
-        }
-
-        // Execute
-        $listObjects = $query->getQuery()->getResult();
-        $listCount = $countQuery->getQuery()->getSingleScalarResult();
-
-        return [
-            'listObjects' => $listObjects,
-            'listCount' => $listCount,
-            'countRecords' => $this->getCountRecords()
-        ];
-    }
+    
 }

@@ -10,6 +10,7 @@ $ cd symfony-pj
 $ docker-compose up --build
 $ docker exec -it php74-container bash
 $ sh deploy.sh
+$ yarn encore dev --watch
 ```
 
 ## Demo screen
