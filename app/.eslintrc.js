@@ -20,6 +20,8 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
-    indent: ['error', 4, { "MemberExpression": 1 }],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "indent": ['error', 4, { "MemberExpression": 1 }],
   }
 }
