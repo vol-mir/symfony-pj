@@ -53,7 +53,7 @@ class HomeController extends AbstractController
     /**
      * Download RBC news
      *
-     * @Route("/api/download/rbc/news",  methods="POST", name="download_rbc_news")
+     * @Route("/api/download/rbc/news",  methods="GET", name="download_rbc_news")
      *
      * @param \App\Service\DownloadNews $parserNews
      *

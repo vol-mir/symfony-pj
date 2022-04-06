@@ -1,7 +1,9 @@
 import React from 'react'
-import { Add } from './components/Add'
+// import { Add } from './components/Add'
 import { News } from './components/News'
+import { Download } from './components/Download'
 import './App.css'
+import CamelCaseKey from 'camelcase-keys'
 
 class App extends React.Component {
     state = {
@@ -16,8 +18,8 @@ class App extends React.Component {
             nextFilteredNews = [...state.news]
 
             nextFilteredNews.forEach((item, index) => {
-                if (item.bigText.toLowerCase().indexOf('pubg') !== -1) {
-                    item.bigText = 'СПАМ'
+                if (item.fullText.toLowerCase().indexOf('pubg') !== -1) {
+                    item.fullText = 'СПАМ'
                 }
             })
 
@@ -31,28 +33,29 @@ class App extends React.Component {
 
     componentDidMount () {
         this.setState({ isLoading: true })
-        fetch('/api/tnews')
+        fetch('/api/news')
             .then(response => {
                 return response.json()
             })
             .then(data => {
                 setTimeout(() => {
-                    this.setState({ isLoading: false, news: data })
+                    this.setState({ isLoading: false, news: CamelCaseKey(data) })
                 }, 1000)
             })
     }
 
-    handleAddNews = data => {
-        const nextNews = [data, ...this.state.news]
-        this.setState({ news: nextNews })
-    }
+    // handleAddNews = data => {
+    //     const nextNews = [data, ...this.state.news]
+    //     this.setState({ news: nextNews })
+    // }
 
     render () {
         const { news, isLoading } = this.state
 
         return (
             <React.Fragment>
-                <Add onAddNews={this.handleAddNews} />
+                {/* <Add onAddNews={this.handleAddNews} /> */}
+                <Download />
                 <h3>Новости</h3>
                 {isLoading && <p>Загружаю...</p>}
                 {Array.isArray(news) && <News data={news} />}

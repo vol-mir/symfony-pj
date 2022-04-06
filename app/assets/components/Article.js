@@ -12,12 +12,12 @@ class Article extends React.Component {
     }
 
     render () {
-        const { author, text, bigText } = this.props.data
+        const { author, fullText } = this.props.data
         const { visible } = this.state
         return (
             <div className="article">
                 <p className="news__author">{author}:</p>
-                <p className="news__text">{text}</p>
+                <p className="news__text">{fullText.length < 150 ? `${fullText}` : `${fullText.substring(0, 150)}...`}</p>
                 {!visible && (
                     <a
                         onClick={this.handleReadMoreClck}
@@ -27,7 +27,7 @@ class Article extends React.Component {
                         Подробнее
                     </a>
                 )}
-                {visible && <p className="news__big-text">{bigText}</p>}
+                {visible && <p className="news__big-text">{fullText}</p>}
             </div>
         )
     }
@@ -35,10 +35,9 @@ class Article extends React.Component {
 
 Article.propTypes = {
     data: PropTypes.shape({
-        id: PropTypes.number.isRequired, // добавили id, это число, обязательно
+        id: PropTypes.string.isRequired, // добавили id, это число, обязательно
         author: PropTypes.string.isRequired,
-        text: PropTypes.string.isRequired,
-        bigText: PropTypes.string.isRequired
+        fullText: PropTypes.string.isRequired
     })
 }
 
