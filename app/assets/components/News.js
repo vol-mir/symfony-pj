@@ -1,74 +1,37 @@
-import React, { Component } from 'react'
-import axios from 'axios'
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Article } from './Article'
 
-class News extends Component {
-    constructor () {
-        super()
-        this.state = {
-            news: [],
-            loading: true
-        }
-    }
+class News extends React.Component {
+    renderNews = () => {
+        const { data } = this.props
+        let newsTemplate = null
 
-    componentDidMount () {
-        this.getNews()
-    }
-
-    getNews () {
-        axios.get('/api/news').then(res => {
-            const news = res.data.slice(0, 15)
-            this.setState({
-                news,
-                loading: false
+        if (data.length) {
+            newsTemplate = data.map(function (item) {
+                return <Article key={item.id} data={item} />
             })
-        })
-    }
+        } else {
+            newsTemplate = <p>К сожалению новостей нет</p>
+        }
 
-    handleClick () {
-        axios.post('/api/download/rbc/news').then(res => {
-            this.getNews()
-        })
+        return newsTemplate
     }
 
     render () {
-        const loading = this.state.loading
-        let blockForPost = <div className={'row text-center'}>
-            <span className='fa fa-spin fa-spinner fa-4x'></span>
-        </div>
-        if (!loading) {
-            blockForPost = <div className={'row'}>
-                {this.state.news.map(post =>
-                    <div className='col-md-10 offset-md-1 row-block' key={post.id}>
-                        <ul id='sortable'>
-                            <li>
-                                <div className='media'>
-                                    <div className='media-body'>
-                                        <h4>{post.title}</h4>
-                                        <p>{post.full_text.length < 150 ? `${post.full_text}` : `${post.full_text.substring(0, 150)}...`}</p>
-                                        <p><span className="badge badge-secondary">{post.category}</span> <span className="badge badge-primary">{post.link_resource}</span></p>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                )}
-            </div>
-        }
+        const { data } = this.props
 
         return (
-            <div>
-                <section className='row-section'>
-                    <div className='container'>
-                        <div className='row'>
-                            <h2 className='text-center'><span>List of news</span><button type='button' className='btn btn-primary' onClick={() => this.handleClick()}>Download RBC</button></h2>
-                        </div>
-
-                        {blockForPost}
-                    </div>
-                </section>
+            <div className="news">
+                {this.renderNews()}
+                {data.length ? (<strong className={'news__count'}>Всего новостей: {data.length}</strong>) : null}
             </div>
         )
     }
 }
 
-export default News
+News.propTypes = {
+    data: PropTypes.array.isRequired
+}
+
+export { News }
