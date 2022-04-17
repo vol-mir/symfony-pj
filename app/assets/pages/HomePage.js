@@ -1,9 +1,10 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Route, Switch } from 'react-router-dom'
 import { RoutesApp } from '../routes'
+import PropTypes from 'prop-types'
 
 // components
-// import Sidebar from '../components/Sidebar'
+import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import Preloader from '../components/Preloader'
 import Footer from '../components/Footer'
@@ -14,51 +15,53 @@ import About from './About'
 import Tables from './tables/BootstrapTables'
 import TestTables from './tables/TestTables'
 
-class HomePage extends React.Component {
-    constructor (props) {
-        super(props)
-        this.state = {
-            loaded: false
-        }
+const RouteWithSidebar = ({ component: Component, ...rest }) => {
+    const [loaded, setLoaded] = useState(false)
+
+    useEffect(() => {
+        const timer = setTimeout(() => setLoaded(true), 1000)
+        return () => clearTimeout(timer)
+    }, [])
+
+    const localStorageIsSettingsVisible = () => {
+        return localStorage.getItem('settingsVisible') !== 'false'
     }
 
-    setLoaded = (flag) => {
-        this.timer = setInterval(
-            () => this.setState(prevState => ({ loaded: flag })),
-            1000
-        )
+    const [showSettings, setShowSettings] = useState(localStorageIsSettingsVisible)
+
+    const toggleSettings = () => {
+        setShowSettings(!showSettings)
+        localStorage.setItem('settingsVisible', !showSettings)
     }
 
-    componentDidMount () {
-        this.setLoaded(true)
-    }
-
-    componentDidUpdate () {
-        this.setLoaded(true)
-    }
-
-    render () {
-        const { loaded } = this.state
-
-        return (
-            <div className="App">
+    return (
+        <Route {...rest} render={props => (
+            <React.Fragment>
                 <Preloader show={!loaded} />
-                {/* <Sidebar /> */}
+                <Sidebar />
 
                 <main className="content">
                     <Navbar />
-                    <Routes>
-                        <Route exact path={RoutesApp.About.path} element={<About />} />
-                        <Route exact path={RoutesApp.Home.path} element={<Home />} />
-                        <Route exact path={RoutesApp.Tables.path} element={<Tables />} />
-                        <Route exact path={RoutesApp.TestTables.path} element={<TestTables />} />
-                    </Routes>
-                    <Footer />
+                    <Component {...props} />
+                    <Footer toggleSettings={toggleSettings} showSettings={showSettings} />
                 </main>
-
-            </div>
-        )
-    }
+            </React.Fragment>
+        )}
+        />
+    )
 }
 
-export default HomePage
+RouteWithSidebar.propTypes = {
+    component: PropTypes.any
+}
+
+export default function HomePage () {
+    return (
+        <Switch>
+            <RouteWithSidebar exact path={RoutesApp.About.path} component={About} />
+            <RouteWithSidebar exact path={RoutesApp.Home.path} component={Home} />
+            <RouteWithSidebar exact path={RoutesApp.Tables.path} component={Tables} />
+            <RouteWithSidebar exact path={RoutesApp.TestTables.path} component={TestTables} />
+        </Switch>
+    )
+}

@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom/client'
+import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
 // core styles
@@ -10,14 +10,12 @@ import ScrollToTop from './components/ScrollToTop'
 
 import reportWebVitals from './reportWebVitals'
 
-const root = ReactDOM.createRoot(document.getElementById('root'))
-root.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <ScrollToTop />
-            <HomePage />
-        </BrowserRouter>
-    </React.StrictMode>
+ReactDOM.render(
+    <BrowserRouter>
+        <ScrollToTop />
+        <HomePage />
+    </BrowserRouter>,
+    document.getElementById('root')
 )
 
 // If you want to start measuring performance in your app, pass a function

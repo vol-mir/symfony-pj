@@ -42,16 +42,9 @@ while true; do
             apt-get update
             apt-get install -y nodejs npm
             npm cache clean --force
-            npm install -g yarn
-            npm install n -g
-
-            yarn add --dev @symfony/webpack-encore
-            yarn add webpack-notifier --dev
+            npm install -g yarn n
+            npm install
             yarn encore dev
-            yarn add @babel/preset-react --dev
-            yarn add react-router-dom
-            yarn add --dev react react-dom prop-types axios
-            yarn add @babel/plugin-proposal-class-properties @babel/plugin-transform-runtime
             
         exit;;
         [Nn]* )
